@@ -1,0 +1,7 @@
+python-dotenv==0.15.0
+Flask==1.1.2
+Flask-SQLAlchemy==2.4.4
+PyMySQL==1.0.2
+psycopg2==2.8.6
+flask-marshmallow==0.14.0
+marshmallow-sqlalchemy==0.24.2
