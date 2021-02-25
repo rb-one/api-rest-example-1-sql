@@ -65,6 +65,14 @@ def get_authors():
     return make_response(jsonify({"authors": authors}))
 
 
+@app.route('/authors/<id>', methods = ['GET'])
+def get_author_by_id(id):
+    get_author = Authors.query.get(id)
+    author_schema = AuthorsSchema()
+    author = author_schema.dump(get_author)
+    return make_response(jsonify({"authors": author}))
+
+
 @app.route('/authors', methods = ['POST'])
 def create_author():
     data = request.get_json()
@@ -78,9 +86,31 @@ def create_author():
     return make_response(jsonify({"author": created_author}),201)
 
 
+@app.route('/authors/<id>', methods = ['PUT'])
+def update_author_by_id(id):
+    data = request.get_json()
+    get_author = Authors.query.get(id)
+    
+    if data.get('specialisation'):
+        get_author.specialisation = data['specialisation']
+
+    if data.get('name'):
+        get_author.name = data['name']
+
+    db.session.add(get_author)
+    db.session.commit()
+    author_schema = AuthorsSchema(only=['id', 'name', 'specialisation'])
+    author = author_schema.dump(get_author)
+
+    return make_response(jsonify({"author": author}))
 
 
-
+@app.route('/authors/<id>', methods = ['DELETE'])
+def delete_author_by_id(id):
+    get_author = Authors.query.get(id)
+    db.session.delete(get_author)
+    db.session.commit()
+    return make_response(f"Author with id: {id}, was deleted",200)
 
 if __name__ == '__main__':
     app.run()
